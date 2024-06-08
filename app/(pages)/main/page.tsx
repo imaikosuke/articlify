@@ -7,6 +7,11 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
 import { RootState } from "@/lib/redux/store";
+import ReactMarkdown from "react-markdown";
+import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlight";
+import type { ClassAttributes, HTMLAttributes } from 'react'
+import type { ExtraProps } from 'react-markdown'
+import { dracula } from 'react-syntax-highlighter/dist/esm/styles/hljs'
 
 interface Article {
   id: string;
@@ -68,6 +73,31 @@ const MainPage = () => {
 
   const uniqueTags = Array.from(new Set(articles.flatMap((article) => article.tags)));
 
+  const Pre = ({
+    children,
+    ...props
+  }: ClassAttributes<HTMLPreElement> &
+    HTMLAttributes<HTMLPreElement> &
+    ExtraProps) => {
+    if (!children || typeof children !== 'object') {
+      return <code {...props}>{children}</code>
+    }
+    const childType = 'type' in children ? children.type : ''
+    if (childType !== 'code') {
+      return <code {...props}>{children}</code>
+    }
+
+    const childProps = 'props' in children ? children.props : {}
+    // 言語に応じてハイライトすることも可能らしいけどできなかった
+    // const { className, chidren: code } = childProps
+    // const language = className?.replace('language-','')
+    const code = childProps.children
+
+    return (
+      <SyntaxHighlighter style={dracula}>{String(code).replace(/\n$/, '')}</SyntaxHighlighter>
+    )
+  }
+
   return (
     <div className="hidden h-full lg:block lg:pl-96">
       <div className="container mx-auto flex flex-col p-8">
@@ -92,7 +122,15 @@ const MainPage = () => {
             <h2 className="text-xl font-bold mb-2">{selectedArticle.title}</h2>
             <p className="text-gray-600 mb-2">Date: {selectedArticle.created_at}</p>
             <h3 className="text-lg font-bold mb-2">-----------------------------</h3>
-            <p className="mb-4">{selectedArticle.summary}</p>
+            <div className="mb-4">
+              <ReactMarkdown
+                components={{
+                  pre: Pre,
+                }}
+              >
+                {selectedArticle.summary}
+              </ReactMarkdown>
+            </div>
             <h3 className="text-lg font-bold mb-2">Tags</h3>
             <ul className="mb-4">
               {selectedArticle.tags.map((tag, index) => (
