@@ -75,18 +75,23 @@ const generateSummary = async (content: string) => {
   }
 };
 
+// Firestoreに記事データを保存する関数
 const saveArticleData = async (user_id: string, url: string, title: string, summary: string) => {
   // データベースに記事データを保存する処理
   console.log("Saving article data to database...");
+  const createdAt = new Date();
+  const formattedDate = `${createdAt.getFullYear()}-${String(createdAt.getMonth() + 1).padStart(
+    2,
+    "0"
+  )}-${String(createdAt.getDate()).padStart(2, "0")}`;
 
-  console.log(new Date());
   try {
     await addDoc(collection(db, "Articles"), {
       user_id,
       url,
       title,
       summary,
-      created_at: new Date(),
+      created_at: formattedDate,
     });
   } catch (error) {
     console.error("Error saving article data:", error);
