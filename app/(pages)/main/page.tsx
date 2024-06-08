@@ -14,26 +14,25 @@ interface Article {
   title: string;
   summary: string;
   created_at: string;
-  tags: string[]; // タグを追加
+  tags: string[];
 }
 
 const MainPage = () => {
   const router = useRouter();
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [articles, setArticles] = useState<Article[]>([]);
+  const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const userId = Cookies.get("user");
-  const opened_folder = useSelector(
-    (state: RootState) => state.folder.folderId
-  );
+  const opened_folder = useSelector((state: RootState) => state.folder.folderId);
 
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await axios.get(
-          `/api/articles?user_id=${userId}&folder_id=${opened_folder}`
-        );
+        const response = await axios.get(`/api/articles?user_id=${userId}&folder_id=${opened_folder}`);
         setArticles(response.data.data);
+        setFilteredArticles(response.data.data); // 初期状態では全ての記事を表示
       } catch (error) {
         console.error("Error fetching articles:", error);
       } finally {
@@ -52,29 +51,47 @@ const MainPage = () => {
     setSelectedArticle(null);
   };
 
+  const handleTagSelect = (tag: string | null) => {
+    setSelectedTag(tag);
+    if (tag) {
+      setFilteredArticles(
+        articles.filter((article) => article.tags.includes(tag) || article.tags.length === 0)
+      );
+    } else {
+      setFilteredArticles(articles);
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
 
+  const uniqueTags = Array.from(new Set(articles.flatMap((article) => article.tags)));
+
   return (
     <div className="hidden h-full lg:block lg:pl-96">
-      <div className="container mx-auto flex p-8">
-        <div className={`w-full ${selectedArticle ? "md:w-2/3" : ""}`}>
-          <h1 className="text-2xl font-bold mb-4">Article List</h1>
-          <ArticleList
-            articles={articles}
-            onArticleClick={handleArticleClick}
-          />
+      <div className="container mx-auto flex flex-col p-8">
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">Filter by Tag:</label>
+          <select
+            value={selectedTag || ""}
+            onChange={(e) => handleTagSelect(e.target.value || null)}
+            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+          >
+            <option value="">All Tags</option>
+            {uniqueTags.map((tag) => (
+              <option key={tag} value={tag}>
+                {tag}
+              </option>
+            ))}
+          </select>
         </div>
+        <ArticleList articles={filteredArticles} onArticleClick={handleArticleClick} />
         {selectedArticle && (
           <div className="fixed top-0 right-0 w-full md:w-1/3 h-full bg-gray-100 p-4 overflow-auto shadow-lg">
             <h2 className="text-xl font-bold mb-2">{selectedArticle.title}</h2>
-            <p className="text-gray-600 mb-2">
-              Date: {selectedArticle.created_at}
-            </p>
-            <h3 className="text-lg font-bold mb-2">
-              -----------------------------
-            </h3>
+            <p className="text-gray-600 mb-2">Date: {selectedArticle.created_at}</p>
+            <h3 className="text-lg font-bold mb-2">-----------------------------</h3>
             <p className="mb-4">{selectedArticle.summary}</p>
             <h3 className="text-lg font-bold mb-2">Tags</h3>
             <ul className="mb-4">
