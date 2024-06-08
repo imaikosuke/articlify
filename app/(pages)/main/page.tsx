@@ -49,32 +49,37 @@ const MainPage = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 flex">
-      <div className={`w-full ${selectedArticle ? "md:w-2/3" : ""}`}>
-        <h1 className="text-2xl font-bold mb-4">Article List</h1>
-        <ArticleList articles={mockdata} onArticleClick={handleArticleClick} />
-      </div>
-      {selectedArticle && (
-        <div className="fixed top-0 right-0 w-full md:w-1/3 h-full bg-gray-100 p-4 overflow-auto shadow-lg">
-          <h2 className="text-xl font-bold mb-2">{selectedArticle.title}</h2>
-          <p className="text-gray-600 mb-2">
-            Date: {selectedArticle.createdAt}
-          </p>
-          <p className="mb-4">{selectedArticle.content}</p>
-          <button
-            onClick={() => router.push(selectedArticle.url)}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          >
-            詳細はこちら
-          </button>
-          <button
-            onClick={handleClose}
-            className="bg-red-500 text-white p-2 ml-4 rounded-full hover:bg-red-600"
-          >
-            <span className="w-4 h-4">✖︎</span>
-          </button>
+    <div className="hidden h-full lg:block lg:pl-96">
+      <div className="container mx-auto flex p-8">
+        <div className={`w-full ${selectedArticle ? "md:w-2/3" : ""}`}>
+          <h1 className="text-2xl font-bold mb-4">Article List</h1>
+          <ArticleList
+            articles={mockdata}
+            onArticleClick={handleArticleClick}
+          />
         </div>
-      )}
+        {selectedArticle && (
+          <div className="fixed top-0 right-0 w-full md:w-1/3 h-full bg-gray-100 p-4 overflow-auto shadow-lg">
+            <h2 className="text-xl font-bold mb-2">{selectedArticle.title}</h2>
+            <p className="text-gray-600 mb-2">
+              Date: {selectedArticle.createdAt}
+            </p>
+            <p className="mb-4">{selectedArticle.content}</p>
+            <button
+              onClick={() => router.push(selectedArticle.url)}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              詳細はこちら
+            </button>
+            <button
+              onClick={handleClose}
+              className="bg-red-500 text-white p-2 ml-4 rounded-full hover:bg-red-600"
+            >
+              <span className="w-4 h-4">✖︎</span>
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
