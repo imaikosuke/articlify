@@ -1,28 +1,37 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
+import { addDoc, collection } from "firebase/firestore";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
+import { db } from "@/lib/firebase/FirebaseConfig";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY });
 
 export async function POST(req: Request) {
   const { searchParams } = new URL(req.url);
   const url = searchParams.get("url");
+  const user_id = searchParams.get("user_id");
 
-  if (!url) {
-    return NextResponse.json({ error: "URL is required" }, { status: 400 });
+  if (!url || !user_id) {
+    return NextResponse.json({ error: "Missing required parameters" }, { status: 400 });
   }
 
   try {
-    const content = await scrapeArticleContent(url);
+    const { content, title, tags } = await scrapeArticleContent(url);
     const summary = await generateSummary(content);
+    if (!summary) {
+      throw new Error("Failed to generate summary");
+    }
+
+    await saveArticleData(user_id, url, title, summary, tags);
+
     return NextResponse.json({ summary }, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
-// 記事の内容をスクレイピングして取得する関数
+// 記事の内容とタイトルをスクレイピングして取得する関数
 const scrapeArticleContent = async (url: string) => {
   try {
     const response = await axios.get(url);
@@ -31,13 +40,20 @@ const scrapeArticleContent = async (url: string) => {
 
     // <article> タグ内のテキストを取得
     const articleContent = $("article").text();
+    const articleTitle = $("title").text();
 
-    if (!articleContent) {
-      throw new Error("Failed to extract article content");
+    // Zennの記事からタグを取得
+    const tags: string[] = [];
+    $(".View_topicName____nYp").each((index, element) => {
+      tags.push($(element).text().trim());
+    });
+
+    if (!articleContent || !articleTitle) {
+      throw new Error("Failed to extract article content or title");
     }
 
-    console.log("Article content:", articleContent);
-    return articleContent.trim();
+    console.log("Tags:", tags);
+    return { content: articleContent.trim(), title: articleTitle.trim(), tags };
   } catch (error) {
     console.error("Error scraping article content:", error);
     throw new Error("Failed to scrape article content");
@@ -61,5 +77,36 @@ const generateSummary = async (content: string) => {
   } catch (error) {
     console.error("Error generating summary:", error);
     throw new Error("Failed to generate summary");
+  }
+};
+
+// Firestoreに記事データを保存する関数
+const saveArticleData = async (
+  user_id: string,
+  url: string,
+  title: string,
+  summary: string,
+  tags: string[]
+) => {
+  // データベースに記事データを保存する処理
+  console.log("Saving article data to database...");
+  const createdAt = new Date();
+  const formattedDate = `${createdAt.getFullYear()}-${String(createdAt.getMonth() + 1).padStart(
+    2,
+    "0"
+  )}-${String(createdAt.getDate()).padStart(2, "0")}`;
+
+  try {
+    await addDoc(collection(db, "Articles"), {
+      user_id,
+      url,
+      title,
+      summary,
+      tags, // タグを保存
+      created_at: formattedDate,
+    });
+  } catch (error) {
+    console.error("Error saving article data:", error);
+    throw new Error("Failed to save article data");
   }
 };

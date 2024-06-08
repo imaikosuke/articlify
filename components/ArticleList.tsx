@@ -1,9 +1,10 @@
 interface Article {
-  id: number;
+  id: string;
   url: string;
   title: string;
-  content: string;
-  createdAt: string;
+  summary: string;
+  created_at: string;
+  tags: string[];
 }
 
 interface ArticleListProps {
@@ -29,10 +30,10 @@ const ArticleList: React.FC<ArticleListProps> = ({ articles, onArticleClick }) =
           onClick={() => onArticleClick(article)}
         >
           <div className="w-1/3">
-            <span className="text-gray-600">{article.createdAt}</span>
+            <span className="text-gray-600">{article.created_at}</span>
           </div>
           <div className="w-2/3">
-            <span className="text-blue-500 hover:underline">{article.title}</span>
+            <span className="text-gray-600">{article.title}</span>
           </div>
         </div>
       ))}
