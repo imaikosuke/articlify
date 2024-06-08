@@ -9,9 +9,9 @@ const openai = new OpenAI({ apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY });
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { url, user_id, parent_folder_id } = body; // フォルダIDを取得
+  const { url, user_id, parent_folder_id = "" } = body; // フォルダIDを取得、デフォルトは空文字
 
-  if (!url || !user_id || !parent_folder_id) {
+  if (!url || !user_id) {
     return NextResponse.json({ error: "Missing required parameters" }, { status: 400 });
   }
 
