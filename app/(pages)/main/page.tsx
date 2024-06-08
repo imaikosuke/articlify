@@ -4,7 +4,9 @@ import React, { useState, useEffect } from "react";
 import ArticleList from "../../../components/ArticleList";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useSelector } from "react-redux";
 import Cookies from "js-cookie";
+import { RootState } from "@/lib/redux/store";
 
 interface Article {
   id: string;
@@ -21,11 +23,16 @@ const MainPage = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const userId = Cookies.get("user");
+  const opened_folder = useSelector(
+    (state: RootState) => state.folder.folderId
+  );
 
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await axios.get(`/api/articles?user_id=${userId}`);
+        const response = await axios.get(
+          `/api/articles?user_id=${userId}&folder_id=${opened_folder}`
+        );
         setArticles(response.data.data);
       } catch (error) {
         console.error("Error fetching articles:", error);
@@ -35,7 +42,7 @@ const MainPage = () => {
     };
 
     fetchArticles();
-  }, [userId]);
+  }, [userId, opened_folder]);
 
   const handleArticleClick = (article: Article) => {
     setSelectedArticle(article);
@@ -54,13 +61,20 @@ const MainPage = () => {
       <div className="container mx-auto flex p-8">
         <div className={`w-full ${selectedArticle ? "md:w-2/3" : ""}`}>
           <h1 className="text-2xl font-bold mb-4">Article List</h1>
-          <ArticleList articles={articles} onArticleClick={handleArticleClick} />
+          <ArticleList
+            articles={articles}
+            onArticleClick={handleArticleClick}
+          />
         </div>
         {selectedArticle && (
           <div className="fixed top-0 right-0 w-full md:w-1/3 h-full bg-gray-100 p-4 overflow-auto shadow-lg">
             <h2 className="text-xl font-bold mb-2">{selectedArticle.title}</h2>
-            <p className="text-gray-600 mb-2">Date: {selectedArticle.created_at}</p>
-            <h3 className="text-lg font-bold mb-2">-----------------------------</h3>
+            <p className="text-gray-600 mb-2">
+              Date: {selectedArticle.created_at}
+            </p>
+            <h3 className="text-lg font-bold mb-2">
+              -----------------------------
+            </h3>
             <p className="mb-4">{selectedArticle.summary}</p>
             <h3 className="text-lg font-bold mb-2">Tags</h3>
             <ul className="mb-4">

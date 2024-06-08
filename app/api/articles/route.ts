@@ -5,14 +5,22 @@ import { db } from "@/lib/firebase/FirebaseConfig";
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("user_id");
+  const folderId = searchParams.get("folder_id");
 
   if (!userId) {
-    return NextResponse.json({ error: "Missing user_id parameter" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Missing user_id parameter" },
+      { status: 400 }
+    );
   }
 
   try {
     // Firebaseのデータベースからuser_idが一致するドキュメントを取得
-    const q = query(collection(db, "Articles"), where("user_id", "==", userId));
+    const q = query(
+      collection(db, "Articles"),
+      where("user_id", "==", userId),
+      where("parent_folder_id", "==", folderId)
+    );
     const querySnapshot = await getDocs(q);
     const articles = querySnapshot.docs.map((doc) => {
       const data = doc.data();
