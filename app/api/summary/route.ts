@@ -17,8 +17,8 @@ export async function POST(req: Request) {
     const content = await scrapeArticleContent(url);
     const summary = await generateSummary(content);
     return NextResponse.json({ summary }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ error: error }, { status: 500 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
