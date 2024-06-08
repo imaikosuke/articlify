@@ -4,6 +4,7 @@ interface Article {
   title: string;
   summary: string;
   created_at: string;
+  tags: string[];
 }
 
 interface ArticleListProps {

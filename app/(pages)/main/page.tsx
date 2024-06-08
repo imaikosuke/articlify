@@ -12,6 +12,7 @@ interface Article {
   title: string;
   summary: string;
   created_at: string;
+  tags: string[]; // タグを追加
 }
 
 const MainPage = () => {
@@ -61,6 +62,17 @@ const MainPage = () => {
             <p className="text-gray-600 mb-2">Date: {selectedArticle.created_at}</p>
             <h3 className="text-lg font-bold mb-2">-----------------------------</h3>
             <p className="mb-4">{selectedArticle.summary}</p>
+            <h3 className="text-lg font-bold mb-2">Tags</h3>
+            <ul className="mb-4">
+              {selectedArticle.tags.map((tag, index) => (
+                <li
+                  key={index}
+                  className="inline-block bg-blue-200 text-blue-800 px-2 py-1 rounded mr-2 mb-2"
+                >
+                  {tag}
+                </li>
+              ))}
+            </ul>
             <button
               onClick={() => router.push(selectedArticle.url)}
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"

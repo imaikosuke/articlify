@@ -17,13 +17,13 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { content, title } = await scrapeArticleContent(url);
+    const { content, title, tags } = await scrapeArticleContent(url);
     const summary = await generateSummary(content);
     if (!summary) {
       throw new Error("Failed to generate summary");
     }
 
-    await saveArticleData(user_id, url, title, summary);
+    await saveArticleData(user_id, url, title, summary, tags);
 
     return NextResponse.json({ summary }, { status: 200 });
   } catch (error: any) {
@@ -42,13 +42,18 @@ const scrapeArticleContent = async (url: string) => {
     const articleContent = $("article").text();
     const articleTitle = $("title").text();
 
+    // Zennの記事からタグを取得
+    const tags: string[] = [];
+    $(".View_topicName____nYp").each((index, element) => {
+      tags.push($(element).text().trim());
+    });
+
     if (!articleContent || !articleTitle) {
       throw new Error("Failed to extract article content or title");
     }
 
-    console.log("Article content:", articleContent);
-    console.log("Article title:", articleTitle);
-    return { content: articleContent.trim(), title: articleTitle.trim() };
+    console.log("Tags:", tags);
+    return { content: articleContent.trim(), title: articleTitle.trim(), tags };
   } catch (error) {
     console.error("Error scraping article content:", error);
     throw new Error("Failed to scrape article content");
@@ -76,7 +81,13 @@ const generateSummary = async (content: string) => {
 };
 
 // Firestoreに記事データを保存する関数
-const saveArticleData = async (user_id: string, url: string, title: string, summary: string) => {
+const saveArticleData = async (
+  user_id: string,
+  url: string,
+  title: string,
+  summary: string,
+  tags: string[]
+) => {
   // データベースに記事データを保存する処理
   console.log("Saving article data to database...");
   const createdAt = new Date();
@@ -91,6 +102,7 @@ const saveArticleData = async (user_id: string, url: string, title: string, summ
       url,
       title,
       summary,
+      tags, // タグを保存
       created_at: formattedDate,
     });
   } catch (error) {
