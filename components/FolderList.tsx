@@ -1,31 +1,29 @@
-import FolderTree from "./FolderTree";
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/lib/redux/store";
-import axios from "axios";
-import Modal from "./AddArticleModal";
+import FolderTree from "./FolderTree";
+import AddArticleModal from "./AddArticleModal";
+import CreateFolderModal from "./CreateFolderModal";
 
 const FolderList = () => {
   const folder = useSelector((state: RootState) => state.folder.folderId);
-  const dispatch = useDispatch();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  //   axios
-  //     .post("/api/folder")
-  //     .then((response: any) => {
-  //       // Explicitly define the type of 'response' as 'any'
-  //       console.log(response.data);
-  //     })
-  //     .catch((error: any) => {
-  //       console.error(error);
-  //     });
+  const [isAddArticleModalOpen, setIsAddArticleModalOpen] = useState(false);
+  const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
 
   const handleAddArticle = () => {
-    setIsModalOpen(true);
+    setIsAddArticleModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const handleCreateFolder = () => {
+    setIsCreateFolderModalOpen(true);
+  };
+
+  const handleCloseAddArticleModal = () => {
+    setIsAddArticleModalOpen(false);
+  };
+
+  const handleCloseCreateFolderModal = () => {
+    setIsCreateFolderModalOpen(false);
   };
 
   return (
@@ -34,16 +32,33 @@ const FolderList = () => {
         <div className="py-2 border-b border-gray-200">
           <button
             onClick={handleAddArticle}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-2"
           >
             + Add Article
+          </button>
+          <button
+            onClick={handleCreateFolder}
+            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+          >
+            + Create Folder
           </button>
         </div>
         <FolderTree />
       </aside>
-      {isModalOpen && <Modal handleCloseModal={handleCloseModal} />}
+      {isAddArticleModalOpen && <AddArticleModal handleCloseModal={handleCloseAddArticleModal} />}
+      {isCreateFolderModalOpen && <CreateFolderModal handleCloseModal={handleCloseCreateFolderModal} />}
     </div>
   );
 };
 
 export default FolderList;
+
+//   axios
+//     .post("/api/folder")
+//     .then((response: any) => {
+//       // Explicitly define the type of 'response' as 'any'
+//       console.log(response.data);
+//     })
+//     .catch((error: any) => {
+//       console.error(error);
+//     });
