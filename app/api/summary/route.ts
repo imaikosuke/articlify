@@ -17,7 +17,14 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { content, title, tags } = await scrapeArticleContent(url);
+    let articleData;
+    if (url.includes("qiita.com")) {
+      articleData = await getArticleFromQiita(url);
+    } else {
+      articleData = await scrapeArticleContent(url);
+    }
+
+    const { content, title, tags } = articleData;
     const summary = await generateSummary(content);
     if (!summary) {
       throw new Error("Failed to generate summary");
@@ -30,6 +37,35 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+// Qiitaの記事情報を取得する関数
+const getArticleFromQiita = async (url: string) => {
+  const articleId = url.split("/").pop(); // URLから記事IDを抽出
+
+  if (!articleId) {
+    throw new Error("Invalid Qiita article URL");
+  }
+
+  const apiUrl = `https://qiita.com/api/v2/items/${articleId}`;
+  const headers = {
+    Authorization: `Bearer ${process.env.NEXT_PUBLIC_QIITA_API_TOKEN}`,
+  };
+
+  try {
+    const response = await axios.get(apiUrl, { headers });
+    const { title, body, tags } = response.data;
+    const tagNames = tags.map((tag: any) => tag.name);
+
+    return {
+      title,
+      content: body,
+      tags: tagNames,
+    };
+  } catch (error) {
+    console.error("Error fetching Qiita article:", error);
+    throw new Error("Failed to fetch Qiita article");
+  }
+};
 
 // 記事の内容とタイトルをスクレイピングして取得する関数
 const scrapeArticleContent = async (url: string) => {
