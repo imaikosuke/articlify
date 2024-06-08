@@ -23,7 +23,13 @@ export async function POST(req: Request) {
       articleData = await scrapeArticleContent(url);
     }
 
-    const { content, title, tags } = articleData;
+    let { content, title, tags } = articleData;
+
+    // "ZennZenn" をタイトルから除去
+    if (title.endsWith("ZennZenn")) {
+      title = title.replace(/ZennZenn$/, "").trim();
+    }
+
     const summary = await generateSummary(content);
     if (!summary) {
       throw new Error("Failed to generate summary");
