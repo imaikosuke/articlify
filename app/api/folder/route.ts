@@ -1,12 +1,22 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
 import { db } from "../../../lib/firebase/FirebaseConfig";
-import { getDocs, collection, doc, deleteDoc } from "firebase/firestore";
+import {
+  getDocs,
+  collection,
+  doc,
+  deleteDoc,
+  query,
+  where,
+} from "firebase/firestore";
 
 export async function POST(req: Request) {
+  const body = await req.json();
+
   try {
     // 'folders' コレクションの参照
-    const querySnapshot = await getDocs(collection(db, "Folders"));
+    const q = query(collection(db, "Folders"), where("uid", "==", body.uid));
+    const querySnapshot = await getDocs(q);
 
     // querySnapshot をそのまま返す
     return NextResponse.json({
@@ -20,3 +30,5 @@ export async function POST(req: Request) {
     );
   }
 }
+// uid == qJqCIGXdpFWAlPYMoxDxMpaLTuq1;
+// uid == "qJqCIGXdpFWAlPYMoxDxMpaLTuq1";

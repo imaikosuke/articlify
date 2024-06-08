@@ -1,3 +1,4 @@
+import FolderTree from "./FolderTree";
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/lib/redux/store";
@@ -64,6 +65,7 @@ const FolderList = () => {
         </nav>
       </aside>
       {isModalOpen && <Modal handleCloseModal={handleCloseModal} />}
+      <FolderTree />
     </div>
   );
 };
