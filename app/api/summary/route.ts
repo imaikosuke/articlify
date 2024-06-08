@@ -1,7 +1,9 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
+import { addDoc, collection } from "firebase/firestore";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
+import { db } from "@/lib/firebase/FirebaseConfig";
 
 const openai = new OpenAI({ apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY });
 
@@ -14,15 +16,21 @@ export async function POST(req: Request) {
   }
 
   try {
-    const content = await scrapeArticleContent(url);
+    const { content, title } = await scrapeArticleContent(url);
     const summary = await generateSummary(content);
+    if (!summary) {
+      throw new Error("Failed to generate summary");
+    }
+
+    await saveArticleData(url, title, summary);
+
     return NextResponse.json({ summary }, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
-// 記事の内容をスクレイピングして取得する関数
+// 記事の内容とタイトルをスクレイピングして取得する関数
 const scrapeArticleContent = async (url: string) => {
   try {
     const response = await axios.get(url);
@@ -31,13 +39,15 @@ const scrapeArticleContent = async (url: string) => {
 
     // <article> タグ内のテキストを取得
     const articleContent = $("article").text();
+    const articleTitle = $("title").text();
 
-    if (!articleContent) {
-      throw new Error("Failed to extract article content");
+    if (!articleContent || !articleTitle) {
+      throw new Error("Failed to extract article content or title");
     }
 
     console.log("Article content:", articleContent);
-    return articleContent.trim();
+    console.log("Article title:", articleTitle);
+    return { content: articleContent.trim(), title: articleTitle.trim() };
   } catch (error) {
     console.error("Error scraping article content:", error);
     throw new Error("Failed to scrape article content");
@@ -61,5 +71,23 @@ const generateSummary = async (content: string) => {
   } catch (error) {
     console.error("Error generating summary:", error);
     throw new Error("Failed to generate summary");
+  }
+};
+
+const saveArticleData = async (url: string, title: string, summary: string) => {
+  // データベースに記事データを保存する処理
+  console.log("Saving article data to database...");
+
+  console.log(new Date());
+  try {
+    await addDoc(collection(db, "Articles"), {
+      url,
+      title,
+      summary,
+      created_at: new Date(),
+    });
+  } catch (error) {
+    console.error("Error saving article data:", error);
+    throw new Error("Failed to save article data");
   }
 };
