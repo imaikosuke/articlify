@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import Cookies from "js-cookie";
 
 interface ModalProps {
   handleCloseModal: () => void;
@@ -7,10 +8,11 @@ interface ModalProps {
 
 const Modal: React.FC<ModalProps> = ({ handleCloseModal }) => {
   const [url, setUrl] = useState("");
+  const user = Cookies.get("user");
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post(`/api/summary?url=${url}`);
+      const response = await axios.post(`/api/summary?url=${url}&user_id=${user}`);
       console.log(response.data);
       handleCloseModal();
     } catch (error) {

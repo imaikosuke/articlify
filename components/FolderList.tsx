@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/lib/redux/store";
 import axios from "axios";
 import Modal from "./AddArticleModal";
+import Cookies from "js-cookie";
 
 const FolderList = () => {
   const folder = useSelector((state: RootState) => state.folder.folderName);
