@@ -1,18 +1,25 @@
 import axios from "axios";
 import React, { useState } from "react";
 import Cookies from "js-cookie";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/redux/store";
 
 interface ModalProps {
   handleCloseModal: () => void;
 }
 
-const Modal: React.FC<ModalProps> = ({ handleCloseModal }) => {
+const AddArticleModal: React.FC<ModalProps> = ({ handleCloseModal }) => {
   const [url, setUrl] = useState("");
   const user = Cookies.get("user");
+  const openedFolder = useSelector((state: RootState) => state.folder.folderId);
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post(`/api/summary?url=${url}&user_id=${user}`);
+      const response = await axios.post("/api/summary", {
+        url,
+        user_id: user,
+        parent_folder_id: openedFolder,
+      });
       console.log(response.data);
       handleCloseModal();
     } catch (error) {
@@ -37,7 +44,7 @@ const Modal: React.FC<ModalProps> = ({ handleCloseModal }) => {
           placeholder="Enter article URL"
         />
         <button
-          onClick={() => handleSubmit()}
+          onClick={handleSubmit}
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
         >
           Add
@@ -47,4 +54,4 @@ const Modal: React.FC<ModalProps> = ({ handleCloseModal }) => {
   );
 };
 
-export default Modal;
+export default AddArticleModal;
