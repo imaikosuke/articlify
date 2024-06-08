@@ -16,6 +16,7 @@ export async function POST(req: Request) {
   try {
     // 'folders' コレクションの参照
     const q = query(collection(db, "Folders"), where("uid", "==", body.uid));
+
     const querySnapshot = await getDocs(q);
     // querySnapshot をそのまま返す
     return NextResponse.json({
@@ -29,5 +30,3 @@ export async function POST(req: Request) {
     );
   }
 }
-// uid == qJqCIGXdpFWAlPYMoxDxMpaLTuq1;
-// uid == "qJqCIGXdpFWAlPYMoxDxMpaLTuq1";
