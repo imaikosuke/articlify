@@ -10,9 +10,10 @@ const openai = new OpenAI({ apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY });
 export async function POST(req: Request) {
   const { searchParams } = new URL(req.url);
   const url = searchParams.get("url");
+  const user_id = searchParams.get("user_id");
 
-  if (!url) {
-    return NextResponse.json({ error: "URL is required" }, { status: 400 });
+  if (!url || !user_id) {
+    return NextResponse.json({ error: "Missing required parameters" }, { status: 400 });
   }
 
   try {
@@ -22,7 +23,7 @@ export async function POST(req: Request) {
       throw new Error("Failed to generate summary");
     }
 
-    await saveArticleData(url, title, summary);
+    await saveArticleData(user_id, url, title, summary);
 
     return NextResponse.json({ summary }, { status: 200 });
   } catch (error: any) {
@@ -74,13 +75,14 @@ const generateSummary = async (content: string) => {
   }
 };
 
-const saveArticleData = async (url: string, title: string, summary: string) => {
+const saveArticleData = async (user_id: string, url: string, title: string, summary: string) => {
   // データベースに記事データを保存する処理
   console.log("Saving article data to database...");
 
   console.log(new Date());
   try {
     await addDoc(collection(db, "Articles"), {
+      user_id,
       url,
       title,
       summary,
