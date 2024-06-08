@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import ArticleList from "../components/ArticleList";
+import ArticleList from "../../../components/ArticleList";
 import { useRouter } from "next/navigation";
 
 interface Article {
@@ -57,7 +57,9 @@ const MainPage = () => {
       {selectedArticle && (
         <div className="fixed top-0 right-0 w-full md:w-1/3 h-full bg-gray-100 p-4 overflow-auto shadow-lg">
           <h2 className="text-xl font-bold mb-2">{selectedArticle.title}</h2>
-          <p className="text-gray-600 mb-2">Date: {selectedArticle.createdAt}</p>
+          <p className="text-gray-600 mb-2">
+            Date: {selectedArticle.createdAt}
+          </p>
           <p className="mb-4">{selectedArticle.content}</p>
           <button
             onClick={() => router.push(selectedArticle.url)}
