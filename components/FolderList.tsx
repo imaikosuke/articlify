@@ -4,22 +4,21 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/lib/redux/store";
 import axios from "axios";
 import Modal from "./AddArticleModal";
-import Cookies from "js-cookie";
 
 const FolderList = () => {
-  const folder = useSelector((state: RootState) => state.folder.folderName);
+  const folder = useSelector((state: RootState) => state.folder.folderId);
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  axios
-    .post("/api/folder")
-    .then((response: any) => {
-      // Explicitly define the type of 'response' as 'any'
-      console.log(response.data);
-    })
-    .catch((error: any) => {
-      console.error(error);
-    });
+  //   axios
+  //     .post("/api/folder")
+  //     .then((response: any) => {
+  //       // Explicitly define the type of 'response' as 'any'
+  //       console.log(response.data);
+  //     })
+  //     .catch((error: any) => {
+  //       console.error(error);
+  //     });
 
   const handleAddArticle = () => {
     setIsModalOpen(true);
@@ -40,32 +39,9 @@ const FolderList = () => {
             + Add Article
           </button>
         </div>
-        <nav>
-          <ul className="space-y-2">
-            <li>
-              <a
-                href="#"
-                className="block py-2 px-4 rounded-lg hover:bg-gray-100"
-                onClick={() => dispatch({ type: "folder/setFolderName", payload: "Fold" })}
-              >
-                {folder}
-              </a>
-            </li>
-            <li>
-              <a href="#" className="block py-2 px-4 rounded-lg hover:bg-gray-100">
-                Folder 2
-              </a>
-            </li>
-            <li>
-              <a href="#" className="block py-2 px-4 rounded-lg hover:bg-gray-100">
-                Folder 3
-              </a>
-            </li>
-          </ul>
-        </nav>
+        <FolderTree />
       </aside>
       {isModalOpen && <Modal handleCloseModal={handleCloseModal} />}
-      <FolderTree />
     </div>
   );
 };

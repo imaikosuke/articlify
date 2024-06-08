@@ -17,7 +17,6 @@ export async function POST(req: Request) {
     // 'folders' コレクションの参照
     const q = query(collection(db, "Folders"), where("uid", "==", body.uid));
     const querySnapshot = await getDocs(q);
-
     // querySnapshot をそのまま返す
     return NextResponse.json({
       data: querySnapshot.docs.map((doc) => doc.data()),
