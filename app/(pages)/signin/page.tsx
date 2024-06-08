@@ -1,8 +1,8 @@
 "use client";
 import React, { use } from "react";
-import { signInWithGoogle } from "../../lib/firebase/auth";
+import { signInWithGoogle } from "../../../lib/firebase/auth";
 import { useRouter } from "next/navigation";
-import { useUser } from "../../hooks/useAuthState";
+import { useUser } from "../../../hooks/useAuthState";
 
 const Page = () => {
   const user = useUser();
