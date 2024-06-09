@@ -17,11 +17,11 @@ const Folder = ({ folder_id, name, children }) => {
   };
 
   return (
-    <ul className="lg:block">
+    <ul className="lg:block mt-2">
       <li
         onClick={toggleOpen}
         style={{ cursor: "pointer", fontWeight: "bold" }}
-        className="lg:block"
+        className="lg:block text-xl"
       >
         {isOpen ? "📂" : "📁"} {name}
       </li>
@@ -57,7 +57,7 @@ const FolderTree = () => {
       ));
   };
 
-  return <div>{renderFolders("")}</div>;
+  return <div className="mx-8">{renderFolders("")}</div>;
 };
 
 export default FolderTree;

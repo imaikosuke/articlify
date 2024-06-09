@@ -29,7 +29,7 @@ const FolderList = () => {
   return (
     <div className="flex">
       <aside className="fixed pt-20 pb-20 px-8 w-96 overflow-y-auto border-r border-gray-200 h-full">
-        <div className="py-2 border-b border-gray-200">
+        <div className="py-2 border-b border-gray-200 mb-8">
           <button
             onClick={handleAddArticle}
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-2"
@@ -45,8 +45,12 @@ const FolderList = () => {
         </div>
         <FolderTree />
       </aside>
-      {isAddArticleModalOpen && <AddArticleModal handleCloseModal={handleCloseAddArticleModal} />}
-      {isCreateFolderModalOpen && <CreateFolderModal handleCloseModal={handleCloseCreateFolderModal} />}
+      {isAddArticleModalOpen && (
+        <AddArticleModal handleCloseModal={handleCloseAddArticleModal} />
+      )}
+      {isCreateFolderModalOpen && (
+        <CreateFolderModal handleCloseModal={handleCloseCreateFolderModal} />
+      )}
     </div>
   );
 };
