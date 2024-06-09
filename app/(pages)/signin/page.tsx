@@ -1,5 +1,6 @@
 "use client";
-import React, { use } from "react";
+
+import React, { useEffect, useState } from "react";
 import { signInWithGoogle } from "../../../lib/firebase/auth";
 import { useRouter } from "next/navigation";
 import { useUser } from "../../../hooks/useAuthState";
@@ -7,27 +8,37 @@ import { useUser } from "../../../hooks/useAuthState";
 const Page = () => {
   const user = useUser();
   const router = useRouter();
-  if (user) {
-    router.push("/");
-  }
-  let redirectRequired = false;
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      router.push("/main");
+    }
+  }, [user, router]);
+
   const SignInButton = async () => {
     try {
       await signInWithGoogle();
-      redirectRequired = true;
+      router.push("/main");
     } catch (error) {
       console.error("Sign in error:", error);
-    }
-    if (redirectRequired) {
-      // サインイン成功後にリダイレクト
-      router.push("/");
+      setError("Failed to sign in. Please try again.");
     }
   };
 
   return (
-    <div>
-      <h1>Register</h1>
-      <button onClick={SignInButton}>Sign in with Google</button>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded shadow-md w-full max-w-md text-center">
+        <h1 className="text-2xl font-bold mb-6">Welcome to Articlify !</h1>
+        <p className="mb-6">📃 技術記事を要約付きで管理をしよう 🎉</p>
+        <button
+          onClick={SignInButton}
+          className="bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+        >
+          Sign in with Google
+        </button>
+        {error && <p className="mt-4 text-red-500">{error}</p>}
+      </div>
     </div>
   );
 };
