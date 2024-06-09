@@ -70,9 +70,6 @@ const MainPage = () => {
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   const uniqueTags = Array.from(new Set(articles.flatMap((article) => article.tags)));
 
