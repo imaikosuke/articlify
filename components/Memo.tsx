@@ -13,11 +13,11 @@ const Memo: React.FC<{ articleId: string }> = ({ articleId }) => {
     });
   }, []);
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     setMemo(e.target.value);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
       await axios.post("/api/save_memo", {
