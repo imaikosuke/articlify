@@ -13,6 +13,7 @@ import type { ClassAttributes, HTMLAttributes } from "react";
 import type { ExtraProps } from "react-markdown";
 import { dracula } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import Memo from "@/components/Memo";
+import TagFilterModal from "../../../components/TagFilterModal";
 
 interface Article {
   id: string;
@@ -30,17 +31,14 @@ const MainPage = () => {
   const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const userId = Cookies.get("user");
-  const opened_folder = useSelector(
-    (state: RootState) => state.folder.folderId
-  );
+  const opened_folder = useSelector((state: RootState) => state.folder.folderId);
 
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await axios.get(
-          `/api/articles?user_id=${userId}&folder_id=${opened_folder}`
-        );
+        const response = await axios.get(`/api/articles?user_id=${userId}&folder_id=${opened_folder}`);
         setArticles(response.data.data);
         setFilteredArticles(response.data.data); // 初期状態では全ての記事を表示
       } catch (error) {
@@ -65,9 +63,7 @@ const MainPage = () => {
     setSelectedTag(tag);
     if (tag) {
       setFilteredArticles(
-        articles.filter(
-          (article) => article.tags.includes(tag) || article.tags.length === 0
-        )
+        articles.filter((article) => article.tags.includes(tag) || article.tags.length === 0)
       );
     } else {
       setFilteredArticles(articles);
@@ -78,16 +74,12 @@ const MainPage = () => {
     return <div>Loading...</div>;
   }
 
-  const uniqueTags = Array.from(
-    new Set(articles.flatMap((article) => article.tags))
-  );
+  const uniqueTags = Array.from(new Set(articles.flatMap((article) => article.tags)));
 
   const Pre = ({
     children,
     ...props
-  }: ClassAttributes<HTMLPreElement> &
-    HTMLAttributes<HTMLPreElement> &
-    ExtraProps) => {
+  }: ClassAttributes<HTMLPreElement> & HTMLAttributes<HTMLPreElement> & ExtraProps) => {
     if (!children || typeof children !== "object") {
       return <code {...props}>{children}</code>;
     }
@@ -97,52 +89,36 @@ const MainPage = () => {
     }
 
     const childProps = "props" in children ? children.props : {};
-    // 言語に応じてハイライトすることも可能らしいけどできなかった
-    // const { className, chidren: code } = childProps
-    // const language = className?.replace('language-','')
     const code = childProps.children;
 
-    return (
-      <SyntaxHighlighter style={dracula}>
-        {String(code).replace(/\n$/, "")}
-      </SyntaxHighlighter>
-    );
+    return <SyntaxHighlighter style={dracula}>{String(code).replace(/\n$/, "")}</SyntaxHighlighter>;
   };
 
   return (
     <div className="hidden h-full lg:block lg:pl-96">
       <div className="container mx-auto flex flex-col p-8">
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Filter by Tag:
-          </label>
-          <select
-
-            value={selectedTag || ""}
-            onChange={(e) => handleTagSelect(e.target.value || null)}
-            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-          >
-            <option value="">All Tags</option>
-            {uniqueTags.map((tag) => (
-              <option key={tag} value={tag}>
-                {tag}
-              </option>
-            ))}
-          </select>
+        <div className="flex border-b py-2 font-bold">
+          <div className="w-1/3">
+            <span>Date</span>
+          </div>
+          <div className="w-1/3">
+            <span>Title</span>
+          </div>
+          <div className="w-1/3 text-right">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              {selectedTag ? `Filter: ${selectedTag}` : "Filter by Tag"}
+            </button>
+          </div>
         </div>
-        <ArticleList
-          articles={filteredArticles}
-          onArticleClick={handleArticleClick}
-        />
+        <ArticleList articles={filteredArticles} onArticleClick={handleArticleClick} />
         {selectedArticle && (
           <div className="fixed top-0 right-0 w-full md:w-1/3 h-full bg-gray-100 p-4 overflow-auto shadow-lg">
             <h2 className="text-xl font-bold mb-2">{selectedArticle.title}</h2>
-            <p className="text-gray-600 mb-2">
-              Date: {selectedArticle.created_at}
-            </p>
-            <h3 className="text-lg font-bold mb-2">
-              -----------------------------
-            </h3>
+            <p className="text-gray-600 mb-2">Date: {selectedArticle.created_at}</p>
+            <h3 className="text-lg font-bold mb-2">-----------------------------</h3>
             <div className="mb-4">
               <ReactMarkdown
                 components={{
@@ -181,6 +157,13 @@ const MainPage = () => {
           </div>
         )}
       </div>
+      {isModalOpen && (
+        <TagFilterModal
+          tags={uniqueTags}
+          onClose={() => setIsModalOpen(false)}
+          onSelectTag={(tag) => handleTagSelect(tag)}
+        />
+      )}
     </div>
   );
 };
