@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setFolderId } from "@/lib/redux/folderSlice";
+import { setFolders } from "@/lib/redux/folderSlice";
 import axios from "axios";
 import { useUser } from "../hooks/useAuthState";
 // フォルダコンポーネント
