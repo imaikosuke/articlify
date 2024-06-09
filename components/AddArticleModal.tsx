@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Cookies from "js-cookie";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/redux/store";
+import { v4 as uuidv4 } from "uuid";
 
 interface ModalProps {
   handleCloseModal: () => void;
@@ -14,8 +15,10 @@ const AddArticleModal: React.FC<ModalProps> = ({ handleCloseModal }) => {
   const openedFolder = useSelector((state: RootState) => state.folder.folderId);
 
   const handleSubmit = async () => {
+    const folderId = uuidv4();
     try {
       const response = await axios.post("/api/summary", {
+        id: folderId,
         url,
         user_id: user,
         parent_folder_id: openedFolder,
