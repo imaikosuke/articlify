@@ -28,6 +28,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
     x: 0,
     y: 0,
   });
+
   const handleContextMenu = (event: any) => {
     event.preventDefault();
     setContextMenuVisible(!contextMenuVisible);
@@ -95,16 +96,18 @@ const ArticleList: React.FC<ArticleListProps> = ({
               <span className="text-gray-600">{article.title}</span>
             </div>
           </div>
-          <button onClick={handleContextMenu} className="z-10 w-1/12">
+          <button onClick={handleContextMenu} className="z-0 w-1/12">
             <Image src="/move.png" alt="Button Image" width="30" height="30" />
           </button>
 
           <button
             onClick={() => handleTrashClick(article.id)}
-            className="z-10 w-1/12"
+            className="z-0 w-1/12"
           >
             <Image src="/trash.png" alt="Button Image" width="30" height="30" />
           </button>
+
+          <button></button>
 
           {contextMenuVisible && (
             <div ref={menuRef}>

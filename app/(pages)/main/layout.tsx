@@ -14,7 +14,10 @@ const MessageLayout = ({
   const [folder, setSelectedFolder] = useState<string | null>(null);
   return (
     <Provider store={store}>
-      <div className="h-full relative">
+      <div className="h-full">
+        <header className="fixed top-5 left-24 z-10 text-4xl text-bold">
+          <h1>Articlify</h1>
+        </header>
         <div className="h-full">
           <FolderList />
           {children}
