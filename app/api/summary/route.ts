@@ -9,16 +9,10 @@ const openai = new OpenAI({ apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY });
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { url, user_id, parent_folder_id = "" } = body; // フォルダIDを取得、デフォルトは空文字
+  const { id, url, user_id, parent_folder_id = "" } = body; // フォルダIDを取得、デフォルトは空文字
 
-  console.log("Request body:", url);
-  console.log("User ID:", user_id);
-
-  if (!url || !user_id) {
-    return NextResponse.json(
-      { error: "Missing required parameters" },
-      { status: 400 }
-    );
+  if (!id || !url || !user_id) {
+    return NextResponse.json({ error: "Missing required parameters" }, { status: 400 });
   }
 
   try {
@@ -41,7 +35,7 @@ export async function POST(req: Request) {
       throw new Error("Failed to generate summary");
     }
 
-    await saveArticleData(user_id, parent_folder_id, url, title, summary, tags); // フォルダIDを追加
+    await saveArticleData(id, user_id, parent_folder_id, url, title, summary, tags); // フォルダIDを追加
 
     return NextResponse.json({ summary }, { status: 200 });
   } catch (error: any) {
@@ -137,6 +131,7 @@ const generateSummary = async (content: string) => {
 
 // Firestoreに記事データを保存する関数
 const saveArticleData = async (
+  id: string,
   user_id: string,
   parent_folder_id: string, // フォルダIDを追加
   url: string,
@@ -153,6 +148,7 @@ const saveArticleData = async (
 
   try {
     await addDoc(collection(db, "Articles"), {
+      id,
       user_id,
       parent_folder_id, // フォルダIDを保存
       url,
