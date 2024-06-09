@@ -4,14 +4,15 @@ import { addDoc, collection } from "firebase/firestore";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import { db } from "@/lib/firebase/FirebaseConfig";
+import { v4 as uuidv4 } from "uuid";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const { id, url, user_id, parent_folder_id = "" } = body; // フォルダIDを取得、デフォルトは空文字
+  const { url, user_id, parent_folder_id = "" } = body; // フォルダIDを取得、デフォルトは空文字
 
-  if (!id || !url || !user_id) {
+  if (!url || !user_id) {
     return NextResponse.json({ error: "Missing required parameters" }, { status: 400 });
   }
 
@@ -35,7 +36,7 @@ export async function POST(req: Request) {
       throw new Error("Failed to generate summary");
     }
 
-    await saveArticleData(id, user_id, parent_folder_id, url, title, summary, tags); // フォルダIDを追加
+    await saveArticleData(user_id, parent_folder_id, url, title, summary, tags); // フォルダIDを追加
 
     return NextResponse.json({ summary }, { status: 200 });
   } catch (error: any) {
@@ -131,7 +132,6 @@ const generateSummary = async (content: string) => {
 
 // Firestoreに記事データを保存する関数
 const saveArticleData = async (
-  id: string,
   user_id: string,
   parent_folder_id: string, // フォルダIDを追加
   url: string,
@@ -145,6 +145,7 @@ const saveArticleData = async (
   const formattedDate = `${createdAt.getFullYear()}-${String(
     createdAt.getMonth() + 1
   ).padStart(2, "0")}-${String(createdAt.getDate()).padStart(2, "0")}`;
+  const id = uuidv4();
 
   try {
     await addDoc(collection(db, "Articles"), {
