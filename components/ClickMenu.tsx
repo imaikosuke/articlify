@@ -61,13 +61,18 @@ const ClickMenu = ({
         backgroundColor: "white",
         border: "1px solid black",
         zIndex: 1000,
+        textAlign: "center",
       }}
-      className="p-4 w-48"
+      className="p-4 w-36"
     >
-      <h1 className="text-sm">フォルダをどこへ移動しますか？</h1>
+      <h1 className="text-sm mb-4 border-b-2">フォルダ移動</h1>
       <ul>
         {folders.map((folder: any) => (
-          <li key={folder.id} onClick={() => moveBy(folder.id)}>
+          <li
+            key={folder.id}
+            className="hover:bg-blue-300"
+            onClick={() => moveBy(folder.id)}
+          >
             {folder.name}
           </li>
         ))}
