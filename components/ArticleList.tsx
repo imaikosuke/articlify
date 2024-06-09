@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import ClickMenu from "./ClickMenu";
+import axios from "axios";
 
 interface Article {
   id: string;
@@ -38,6 +39,26 @@ const ArticleList: React.FC<ArticleListProps> = ({
       setContextMenuVisible(false);
     }
   };
+
+  const handleTrashClick = (article_id: string) => {
+    const confirmed = window.confirm("削除しますか？");
+
+    console.log("article_id:", article_id);
+
+    if (confirmed) {
+      console.log("Deleting article...");
+      axios
+        .post("/api/delete", { article_id: article_id })
+        .then((res) => {
+          alert("削除しました");
+        })
+        .catch((error) => {
+          alert("削除に失敗しました");
+          console.error("Error deleting article:", error);
+        });
+    }
+  };
+
   useEffect(() => {
     if (contextMenuVisible) {
       document.addEventListener("click", handleClickOutside);
@@ -74,8 +95,15 @@ const ArticleList: React.FC<ArticleListProps> = ({
               <span className="text-gray-600">{article.title}</span>
             </div>
           </div>
-          <button onClick={handleContextMenu} className="z-10 w-1/6">
+          <button onClick={handleContextMenu} className="z-10 w-1/12">
             <Image src="/move.png" alt="Button Image" width="30" height="30" />
+          </button>
+
+          <button
+            onClick={() => handleTrashClick(article.id)}
+            className="z-10 w-1/12"
+          >
+            <Image src="/trash.png" alt="Button Image" width="30" height="30" />
           </button>
 
           {contextMenuVisible && (
