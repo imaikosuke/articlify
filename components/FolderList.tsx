@@ -27,8 +27,8 @@ const FolderList = () => {
   };
 
   return (
-    <div>
-      <aside className="fixed pt-20 pb-20 lg:pb-0 lg:px-8 lg:w-96 lg:block overflow-y-auto border-r border-border block w-full left-0 h-full">
+    <div className="flex">
+      <aside className="fixed pt-20 pb-20 px-8 w-96 overflow-y-auto border-r border-gray-200 h-full">
         <div className="py-2 border-b border-gray-200">
           <button
             onClick={handleAddArticle}

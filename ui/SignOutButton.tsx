@@ -3,7 +3,7 @@ import { auth } from "../lib/firebase/FirebaseConfig";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 
-const SignOutButton = () => {
+const SignOutButton = ({ onClose }: { onClose: () => void }) => {
   const router = useRouter();
   const signOut = async () => {
     try {
@@ -14,10 +14,15 @@ const SignOutButton = () => {
     }
 
     if (Cookies.get("user") === undefined) {
+      onClose();
       router.push("/signin");
     }
   };
-  return <button onClick={signOut}>Sign out</button>;
+  return (
+    <button onClick={signOut} className="bg-red-500 text-white px-4 py-2 rounded">
+      Sign out
+    </button>
+  );
 };
 
 export default SignOutButton;
