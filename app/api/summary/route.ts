@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 import OpenAI from "openai";
 import { db } from "@/lib/firebase/FirebaseConfig";
 
-const openai = new OpenAI({ apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -53,7 +53,7 @@ const getArticleFromQiita = async (url: string) => {
 
   const apiUrl = `https://qiita.com/api/v2/items/${articleId}`;
   const headers = {
-    Authorization: `Bearer ${process.env.NEXT_PUBLIC_QIITA_API_TOKEN}`,
+    Authorization: `Bearer ${process.env.QIITA_API_TOKEN}`,
   };
 
   try {
