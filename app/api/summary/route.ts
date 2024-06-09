@@ -11,8 +11,14 @@ export async function POST(req: Request) {
   const body = await req.json();
   const { url, user_id, parent_folder_id = "" } = body; // フォルダIDを取得、デフォルトは空文字
 
+  console.log("Request body:", url);
+  console.log("User ID:", user_id);
+
   if (!url || !user_id) {
-    return NextResponse.json({ error: "Missing required parameters" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Missing required parameters" },
+      { status: 400 }
+    );
   }
 
   try {
@@ -100,13 +106,21 @@ const generateSummary = async (content: string) => {
   try {
     const completion = await openai.chat.completions.create({
       messages: [
-        { role: "system", content: "You are a handy assistant who summarizes articles in Japanese." },
-        { role: "user", content: `Please summarize the following article:\n\n${content}\n\nSummary:` },
+        {
+          role: "system",
+          content:
+            "You are a handy assistant who summarizes articles in Japanese.",
+        },
+        {
+          role: "user",
+          content: `Please summarize the following article:\n\n${content}\n\nSummary:`,
+        },
       ],
       model: "gpt-4o",
     });
 
-    const summary = completion.choices && completion.choices[0]?.message?.content?.trim();
+    const summary =
+      completion.choices && completion.choices[0]?.message?.content?.trim();
     console.log("Summary:", summary);
     return summary;
   } catch (error) {
@@ -127,10 +141,9 @@ const saveArticleData = async (
   // データベースに記事データを保存する処理
   console.log("Saving article data to database...");
   const createdAt = new Date();
-  const formattedDate = `${createdAt.getFullYear()}-${String(createdAt.getMonth() + 1).padStart(
-    2,
-    "0"
-  )}-${String(createdAt.getDate()).padStart(2, "0")}`;
+  const formattedDate = `${createdAt.getFullYear()}-${String(
+    createdAt.getMonth() + 1
+  ).padStart(2, "0")}-${String(createdAt.getDate()).padStart(2, "0")}`;
 
   try {
     await addDoc(collection(db, "Articles"), {

@@ -27,7 +27,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "lib/redux/counterSlice.js",
-    "lib/redux/store.js",
+    "lib/redux/store.ts",
     "components/FolderTree.js"
   ],
   "exclude": ["node_modules"]
