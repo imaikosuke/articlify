@@ -75,14 +75,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
 
   return (
     <div className="grid grid-cols-1 gap-4">
-      <div className="flex border-b py-2 font-bold">
-        <div className="w-1/3">
-          <span>Date</span>
-        </div>
-        <div className="w-2/3">
-          <span>Title</span>
-        </div>
-      </div>
+      
       {articles.map((article) => (
         <div key={article.id} className="flex">
           <div
