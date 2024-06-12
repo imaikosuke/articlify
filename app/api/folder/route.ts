@@ -1,6 +1,6 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
-import { db } from "../../../lib/firebase/firebaseConfig";
+import { db } from "../../../lib/firebase/FirebaseConfig";
 import { getDocs, collection, doc, deleteDoc, query, where } from "firebase/firestore";
 
 export async function POST(req: Request) {

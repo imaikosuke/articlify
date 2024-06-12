@@ -3,7 +3,7 @@ import * as cheerio from "cheerio";
 import { addDoc, collection } from "firebase/firestore";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
-import { db } from "@/lib/firebase/firebaseConfig";
+import { db } from "@/lib/firebase/FirebaseConfig";
 import { v4 as uuidv4 } from "uuid";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });

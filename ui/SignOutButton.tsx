@@ -1,7 +1,7 @@
 import React from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { auth } from "@/lib/firebase/firebaseConfig";
+import { auth } from "@/lib/firebase/FirebaseConfig";
 
 const SignOutButton = ({ onClose }: { onClose: () => void }) => {
   const router = useRouter();
