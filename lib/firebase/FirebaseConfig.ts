@@ -1,10 +1,8 @@
-// lib/firebase/FirebaseConfig.ts
-
-import { initializeApp, getApps, FirebaseApp } from "firebase/app";
+import { initializeApp, FirebaseApp } from "firebase/app";
 import { getFirestore, Firestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider, Auth } from "firebase/auth";
 
-const firebaseConfig = {
+const FirebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_APIKEY,
   authDomain: process.env.NEXT_PUBLIC_AUTHDOMAIN,
   projectId: process.env.NEXT_PUBLIC_PROJECTID,
@@ -14,7 +12,7 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_MEASUREMENTID,
 };
 
-const firebaseApp: FirebaseApp = initializeApp(firebaseConfig);
+const firebaseApp: FirebaseApp = initializeApp(FirebaseConfig);
 const auth: Auth = getAuth(firebaseApp);
 const db: Firestore = getFirestore();
 const googleProvider: GoogleAuthProvider = new GoogleAuthProvider();

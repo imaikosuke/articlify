@@ -1,15 +1,6 @@
-import axios from "axios";
 import { NextResponse } from "next/server";
 import { db } from "../../../lib/firebase/FirebaseConfig";
-import {
-  getDocs,
-  getDoc,
-  collection,
-  doc,
-  deleteDoc,
-  query,
-  where,
-} from "firebase/firestore";
+import { getDocs, collection, query, where } from "firebase/firestore";
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -20,7 +11,6 @@ export async function POST(req: Request) {
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
       const docSnapshot = querySnapshot.docs[0];
-      console.log("Document data:", docSnapshot.data());
       return NextResponse.json({
         data: docSnapshot.data(),
       });
@@ -34,9 +24,6 @@ export async function POST(req: Request) {
     }
   } catch (error) {
     // エラーレスポンスを返す
-    return NextResponse.json(
-      { error: "Failed to fetch user data" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch user data" }, { status: 500 });
   }
 }

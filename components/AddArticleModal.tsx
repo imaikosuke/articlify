@@ -20,7 +20,6 @@ const AddArticleModal: React.FC<ModalProps> = ({ handleCloseModal }) => {
         user_id: user,
         parent_folder_id: openedFolder,
       });
-      console.log(response.data);
       handleCloseModal();
     } catch (error) {
       console.error(error);

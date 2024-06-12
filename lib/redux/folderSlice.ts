@@ -1,5 +1,4 @@
-import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { set } from "firebase/database";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export const folderSlice = createSlice({
   name: "folder",

@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "@/lib/firebase/FirebaseConfig";
 import axios from "axios";
 
 const Memo: React.FC<{ articleId: string }> = ({ articleId }) => {
@@ -8,10 +6,9 @@ const Memo: React.FC<{ articleId: string }> = ({ articleId }) => {
 
   useEffect(() => {
     axios.get("/api/get_memo?article_id=" + articleId).then((res) => {
-      console.log(res.data.memo);
       setMemo(res.data.memo || "");
     });
-  }, []);
+  }, [articleId]);
 
   const handleChange = (e: any) => {
     setMemo(e.target.value);

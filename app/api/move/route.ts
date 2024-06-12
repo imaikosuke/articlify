@@ -1,26 +1,13 @@
-import axios from "axios";
 import { NextResponse } from "next/server";
 import { db } from "../../../lib/firebase/FirebaseConfig";
-import {
-  getDocs,
-  getDoc,
-  collection,
-  doc,
-  deleteDoc,
-  updateDoc,
-  query,
-  where,
-} from "firebase/firestore";
+import { getDocs, collection, doc, updateDoc, query, where } from "firebase/firestore";
 
 export async function POST(req: Request) {
   const body = await req.json();
 
   try {
     // ドキュメントの参照を取得
-    const q = query(
-      collection(db, "Articles"),
-      where("id", "==", body.articleId)
-    );
+    const q = query(collection(db, "Articles"), where("id", "==", body.articleId));
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
       const docSnapshot = querySnapshot.docs[0];
@@ -30,12 +17,10 @@ export async function POST(req: Request) {
         parent_folder_id: body.folderId,
       });
 
-      console.log("Parent_folder_id を更新しました");
       return NextResponse.json({
         message: "Parent_folder_id を更新しました",
       });
     } else {
-      console.log("該当の記事が見つかりませんでした");
       return NextResponse.json(
         {
           error: "該当の記事が見つかりませんでした",

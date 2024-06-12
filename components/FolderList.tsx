@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/lib/redux/store";
 import FolderTree from "./FolderTree";
 import AddArticleModal from "./AddArticleModal";
 import CreateFolderModal from "./CreateFolderModal";
 
 const FolderList = () => {
-  const folder = useSelector((state: RootState) => state.folder.folderId);
   const [isAddArticleModalOpen, setIsAddArticleModalOpen] = useState(false);
   const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
 
@@ -45,24 +42,10 @@ const FolderList = () => {
         </div>
         <FolderTree />
       </aside>
-      {isAddArticleModalOpen && (
-        <AddArticleModal handleCloseModal={handleCloseAddArticleModal} />
-      )}
-      {isCreateFolderModalOpen && (
-        <CreateFolderModal handleCloseModal={handleCloseCreateFolderModal} />
-      )}
+      {isAddArticleModalOpen && <AddArticleModal handleCloseModal={handleCloseAddArticleModal} />}
+      {isCreateFolderModalOpen && <CreateFolderModal handleCloseModal={handleCloseCreateFolderModal} />}
     </div>
   );
 };
 
 export default FolderList;
-
-//   axios
-//     .post("/api/folder")
-//     .then((response: any) => {
-//       // Explicitly define the type of 'response' as 'any'
-//       console.log(response.data);
-//     })
-//     .catch((error: any) => {
-//       console.error(error);
-//     });

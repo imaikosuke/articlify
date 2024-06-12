@@ -1,19 +1,17 @@
 "use client";
 import React from "react";
 import FolderList from "@/components/FolderList";
-import { useState } from "react";
 import { Provider } from "react-redux";
 import { store } from "../../../lib/redux/store";
 import UserMenu from "@/components/UserMenu";
-import Image from "next/image"; // Import the Image component from next/image
-import articlifyIcon from "/public/articlify.png"; // Ensure the image is located in the public folder
+import Image from "next/image";
+import articlifyIcon from "/public/articlify.png";
 
 const MessageLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  const [folder, setSelectedFolder] = useState<string | null>(null);
   return (
     <Provider store={store}>
       <div className="h-full">
