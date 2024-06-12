@@ -1,6 +1,6 @@
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { NextResponse } from "next/server";
-import { db } from "@/lib/firebase/FirebaseConfig";
+import { db } from "@/lib/firebase/firebaseConfig";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -8,10 +8,7 @@ export async function GET(req: Request) {
   const folderId = searchParams.get("folder_id");
 
   if (!userId) {
-    return NextResponse.json(
-      { error: "Missing user_id parameter" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Missing user_id parameter" }, { status: 400 });
   }
 
   try {

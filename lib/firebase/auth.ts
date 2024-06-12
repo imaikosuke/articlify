@@ -1,17 +1,7 @@
 import { signInWithPopup } from "firebase/auth";
-import { auth, googleProvider, db } from "./FirebaseConfig";
+import { auth, googleProvider, db } from "./firebaseConfig";
 import Cookies from "js-cookie";
-import {
-  getDocs,
-  getDoc,
-  collection,
-  doc,
-  deleteDoc,
-  updateDoc,
-  query,
-  where,
-  addDoc,
-} from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 
 export const signInWithGoogle = async () => {
   try {
@@ -25,6 +15,6 @@ export const signInWithGoogle = async () => {
 
     return user;
   } catch (error) {
-    console.log(error);
+    return error;
   }
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { auth } from "../lib/firebase/FirebaseConfig";
+import { auth } from "../lib/firebase/firebaseConfig";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 

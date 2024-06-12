@@ -1,6 +1,6 @@
 import { setDoc, doc } from "firebase/firestore";
 import { NextResponse } from "next/server";
-import { db } from "@/lib/firebase/FirebaseConfig";
+import { db } from "@/lib/firebase/firebaseConfig";
 
 export async function POST(req: Request) {
   const body = await req.json();

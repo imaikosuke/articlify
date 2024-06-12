@@ -3,7 +3,7 @@ import * as cheerio from "cheerio";
 import { addDoc, collection } from "firebase/firestore";
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
-import { db } from "@/lib/firebase/FirebaseConfig";
+import { db } from "@/lib/firebase/firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -94,7 +94,6 @@ const scrapeArticleContent = async (url: string) => {
       throw new Error("Failed to extract article content or title");
     }
 
-    console.log("Tags:", tags);
     return { content: articleContent.trim(), title: articleTitle.trim(), tags };
   } catch (error) {
     console.error("Error scraping article content:", error);
@@ -109,8 +108,7 @@ const generateSummary = async (content: string) => {
       messages: [
         {
           role: "system",
-          content:
-            "You are a handy assistant who summarizes articles in Japanese.",
+          content: "You are a handy assistant who summarizes articles in Japanese.",
         },
         {
           role: "user",
@@ -120,9 +118,7 @@ const generateSummary = async (content: string) => {
       model: "gpt-4o",
     });
 
-    const summary =
-      completion.choices && completion.choices[0]?.message?.content?.trim();
-    console.log("Summary:", summary);
+    const summary = completion.choices && completion.choices[0]?.message?.content?.trim();
     return summary;
   } catch (error) {
     console.error("Error generating summary:", error);
@@ -140,11 +136,11 @@ const saveArticleData = async (
   tags: string[]
 ) => {
   // データベースに記事データを保存する処理
-  console.log("Saving article data to database...");
   const createdAt = new Date();
-  const formattedDate = `${createdAt.getFullYear()}-${String(
-    createdAt.getMonth() + 1
-  ).padStart(2, "0")}-${String(createdAt.getDate()).padStart(2, "0")}`;
+  const formattedDate = `${createdAt.getFullYear()}-${String(createdAt.getMonth() + 1).padStart(
+    2,
+    "0"
+  )}-${String(createdAt.getDate()).padStart(2, "0")}`;
   const id = uuidv4();
 
   try {

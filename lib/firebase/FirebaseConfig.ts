@@ -1,6 +1,4 @@
-// lib/firebase/FirebaseConfig.ts
-
-import { initializeApp, getApps, FirebaseApp } from "firebase/app";
+import { initializeApp, FirebaseApp } from "firebase/app";
 import { getFirestore, Firestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider, Auth } from "firebase/auth";
 

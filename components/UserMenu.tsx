@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Cookies from "js-cookie";
 import SignOutButton from "../ui/SignOutButton";
-import { auth } from "../lib/firebase/FirebaseConfig";
+import { auth } from "../lib/firebase/firebaseConfig";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Image from "next/image";
 import { FaCopy } from "react-icons/fa";
@@ -62,7 +62,9 @@ const UserMenu = () => {
               &#x2715;
             </button>
             <h2 className="text-xl font-bold mb-4">User Info</h2>
-            {user && user.email && <p className="text-sm text-gray-700 font-bold mb-2">Email: {user.email}</p>}
+            {user && user.email && (
+              <p className="text-sm text-gray-700 font-bold mb-2">Email: {user.email}</p>
+            )}
             <div className="text-sm text-gray-700 mb-4">
               <div className="flex items-center">
                 <p className="font-bold mr-2">User ID: {Cookies.get("user")}</p>

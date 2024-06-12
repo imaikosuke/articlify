@@ -1,9 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useUser } from "@/hooks/useAuthState";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "@/lib/redux/store";
+import { useDispatch } from "react-redux";
+import Cookies from "js-cookie";
 
 const ClickMenu = ({
   position: { x, y },
@@ -14,7 +13,7 @@ const ClickMenu = ({
   toggle: (visible: boolean) => void;
   article_id: string;
 }) => {
-  const uid = useUser();
+  const uid = Cookies.get("user");
   const dispatch = useDispatch();
   const [folders, setFolders] = useState([]);
   const [contextMenuPosition, setContextMenuPosition] = useState({
@@ -34,15 +33,13 @@ const ClickMenu = ({
     };
 
     fetchData();
-  }, []);
+  }, [uid]);
 
   const moveBy = (folderId: string) => {
-    console.log(folderId);
     // フォルダーを移動する処理
     axios
       .post("/api/move", { folderId: folderId, articleId: article_id })
       .then((res) => {
-        console.log(res);
         alert("移動が成功しました");
       })
       .catch((error) => {
@@ -68,11 +65,7 @@ const ClickMenu = ({
       <h1 className="text-sm mb-4 border-b-2">フォルダ移動</h1>
       <ul>
         {folders.map((folder: any) => (
-          <li
-            key={folder.id}
-            className="hover:bg-blue-300"
-            onClick={() => moveBy(folder.id)}
-          >
+          <li key={folder.id} className="hover:bg-blue-300" onClick={() => moveBy(folder.id)}>
             {folder.name}
           </li>
         ))}

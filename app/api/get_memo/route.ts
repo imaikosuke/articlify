@@ -1,24 +1,13 @@
-import axios from "axios";
 import { NextResponse } from "next/server";
-import { db } from "../../../lib/firebase/FirebaseConfig";
-import {
-  getDocs,
-  collection,
-  doc,
-  deleteDoc,
-  query,
-  where,
-} from "firebase/firestore";
+import { db } from "../../../lib/firebase/firebaseConfig";
+import { getDocs, collection, query, where } from "firebase/firestore";
 
 export async function GET(req: Request) {
   const searchParams = new URL(req.url).searchParams;
   const id = searchParams.get("article_id");
 
   if (!id) {
-    return NextResponse.json(
-      { error: "Missing required parameter 'id'" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Missing required parameter 'id'" }, { status: 400 });
   }
 
   try {

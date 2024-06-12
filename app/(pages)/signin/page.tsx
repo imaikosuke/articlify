@@ -1,28 +1,24 @@
 "use client";
 
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { signInWithGoogle } from "../../../lib/firebase/auth";
 import { useRouter } from "next/navigation";
-import { useUser } from "../../../hooks/useAuthState";
+import Cookies from "js-cookie";
 
 const Page = () => {
-  const user = useUser();
+  const user = Cookies.get("user");
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [db_user, setDb_user] = useState<any>(null);
 
   useEffect(() => {
-    console.log("User:", db_user);
     if (db_user != undefined) {
-      console.log("User already signed in. Redirecting to main page...");
       router.push("/main");
     }
   }, [db_user, router]);
 
   useEffect(() => {
-    console.log("User:", user);
     if (user) {
-      console.log("User already signed in. Redirecting to main page...");
       router.push("/main");
     }
   }, [user, router]);

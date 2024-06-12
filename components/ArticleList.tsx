@@ -18,10 +18,7 @@ interface ArticleListProps {
   onArticleClick: (article: Article) => void;
 }
 
-const ArticleList: React.FC<ArticleListProps> = ({
-  articles,
-  onArticleClick,
-}) => {
+const ArticleList: React.FC<ArticleListProps> = ({ articles, onArticleClick }) => {
   const [contextMenuVisible, setContextMenuVisible] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const [contextMenuPosition, setContextMenuPosition] = useState({
@@ -43,11 +40,7 @@ const ArticleList: React.FC<ArticleListProps> = ({
 
   const handleTrashClick = (article_id: string) => {
     const confirmed = window.confirm("削除しますか？");
-
-    console.log("article_id:", article_id);
-
     if (confirmed) {
-      console.log("Deleting article...");
       axios
         .post("/api/delete", { article_id: article_id })
         .then((res) => {
@@ -75,28 +68,26 @@ const ArticleList: React.FC<ArticleListProps> = ({
 
   return (
     <div className="grid grid-cols-1 gap-4">
-      
       {articles.map((article) => (
         <div key={article.id} className="flex">
           <div
             className="border-b py-2 hover:bg-blue-100 cursor-pointer w-5/6"
             onClick={() => onArticleClick(article)}
           >
-            <div className="w-1/3">
-              <span className="text-gray-600">{article.created_at}</span>
-            </div>
-            <div className="w-2/3">
-              <span className="text-gray-600">{article.title}</span>
+            <div className="flex-grow flex items-center" onClick={() => onArticleClick(article)}>
+              <div className="w-1/3">
+                <span className="text-gray-600">{article.created_at}</span>{" "}
+              </div>
+              <div className="w-2/3">
+                <span className="text-gray-600">{article.title}</span>{" "}
+              </div>
             </div>
           </div>
           <button onClick={handleContextMenu} className="z-0 w-1/12">
             <Image src="/move.png" alt="Button Image" width="30" height="30" />
           </button>
 
-          <button
-            onClick={() => handleTrashClick(article.id)}
-            className="z-0 w-1/12"
-          >
+          <button onClick={() => handleTrashClick(article.id)} className="z-0 w-1/12">
             <Image src="/trash.png" alt="Button Image" width="30" height="30" />
           </button>
 

@@ -1,14 +1,7 @@
 import axios from "axios";
 import { NextResponse } from "next/server";
-import { db } from "../../../lib/firebase/FirebaseConfig";
-import {
-  getDocs,
-  collection,
-  doc,
-  deleteDoc,
-  query,
-  where,
-} from "firebase/firestore";
+import { db } from "../../../lib/firebase/firebaseConfig";
+import { getDocs, collection, doc, deleteDoc, query, where } from "firebase/firestore";
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -24,9 +17,6 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     // エラーレスポンスを返す
-    return NextResponse.json(
-      { error: "Failed to fetch folders" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch folders" }, { status: 500 });
   }
 }

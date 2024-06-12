@@ -1,10 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setFolderId } from "@/lib/redux/folderSlice";
-import { setFolders } from "@/lib/redux/folderSlice";
 import axios from "axios";
-import { useUser } from "../hooks/useAuthState";
+import Cookies from "js-cookie";
+
 // フォルダコンポーネント
 const Folder = ({ folder_id, name, children }) => {
   const dispatch = useDispatch();
@@ -32,7 +32,7 @@ const Folder = ({ folder_id, name, children }) => {
 
 // フォルダツリーコンポーネント
 const FolderTree = () => {
-  const uid = useUser();
+  const uid = Cookies.get("user");
   const [folders, setFolders] = useState([]);
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const FolderTree = () => {
     axios.post("/api/folder", { uid: uid }).then((res) => {
       setFolders(res.data.data);
     });
-  }, []);
+  }, [uid]);
 
   // フォルダ構造を再帰的にレンダリングする関数
   const renderFolders = (parentId) => {

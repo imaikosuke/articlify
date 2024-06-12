@@ -40,7 +40,7 @@ const MainPage = () => {
       try {
         const response = await axios.get(`/api/articles?user_id=${userId}&folder_id=${opened_folder}`);
         setArticles(response.data.data);
-        setFilteredArticles(response.data.data); // 初期状態では全ての記事を表示
+        setFilteredArticles(response.data.data);
       } catch (error) {
         console.error("Error fetching articles:", error);
       } finally {
