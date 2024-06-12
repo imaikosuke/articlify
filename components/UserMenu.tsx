@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import Cookies from "js-cookie";
-import SignOutButton from "../ui/SignOutButton";
-import { auth } from "../lib/firebase/firebaseConfig";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Image from "next/image";
 import { FaCopy } from "react-icons/fa";
+import SignOutButton from "@/ui/SignOutButton";
+import { auth } from "@/lib/firebase/firebaseConfig";
 
 const UserMenu = () => {
   const [user, loading] = useAuthState(auth);
